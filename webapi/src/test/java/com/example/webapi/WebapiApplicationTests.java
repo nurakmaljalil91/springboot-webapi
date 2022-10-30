@@ -1,4 +1,4 @@
-package com.ohwowgame.webapi;
+package com.example.webapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
