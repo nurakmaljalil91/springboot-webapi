@@ -1,6 +1,7 @@
 package com.akmal.webapi.security;
 
 import com.akmal.webapi.filter.CustomAuthenticationFilter;
+import com.akmal.webapi.filter.CustomAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -36,10 +38,11 @@ public class SecurityConfiguration {
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
         http.cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/v1/login/**").permitAll().and()
+                .authorizeRequests().antMatchers("/api/v1/login/**", "/", "/refresh/**").permitAll().and()
                 .authorizeRequests().antMatchers(GET, "/api/v1/users/**").hasAnyAuthority("USER_ROLE").and()
                 .authorizeRequests().antMatchers(POST, "/api/v1/users/**").hasAnyAuthority("ADMIN_ROLE").and()
                 .authorizeRequests().anyRequest().authenticated().and()
+                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilter(customAuthenticationFilter);
 
         return http.build();
