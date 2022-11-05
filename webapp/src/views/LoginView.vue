@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { LoginForm } from "@/types/LoginForm";
+import {useAuthStore} from "@/stores/authentication";
 
+const authenticationStore = useAuthStore();
 const form: LoginForm = {
   username: "",
   password: "",
 };
 
 function onSubmit() {
-  console.log(form.username);
+  authenticationStore.login(form);
 }
 </script>
 
@@ -40,7 +42,7 @@ function onSubmit() {
                   <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <input
-                      v-model="form.username"
+                      v-model="form.password"
                       type="password"
                       class="form-control"
                       id="password"

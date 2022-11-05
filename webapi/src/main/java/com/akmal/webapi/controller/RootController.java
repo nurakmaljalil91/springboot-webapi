@@ -7,6 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,16 +37,16 @@ public class RootController {
 
         return response;
     }
-
+    
     @GetMapping("refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
-                var refresh_token = authorizationHeader.substring("Bearer ".length());
+                var refreshToken = authorizationHeader.substring("Bearer ".length());
                 var algorithm = Algorithm.HMAC256("secret".getBytes());
                 var jwtVerifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = jwtVerifier.verify(refresh_token);
+                DecodedJWT decodedJWT = jwtVerifier.verify(refreshToken);
 
                 var username = decodedJWT.getSubject();
                 var user = userService.getUser(username);
@@ -59,7 +60,7 @@ public class RootController {
 
 
                 Map<String, String> tokens = new HashMap<>();
-                tokens.put("access_token", accessToken);
+                tokens.put("accessToken", accessToken);
 
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
