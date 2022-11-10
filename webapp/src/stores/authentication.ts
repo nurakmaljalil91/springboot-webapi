@@ -25,7 +25,7 @@ export const useAuthStore = defineStore("authentication", () => {
       })
       .then(function (response) {
         user = response.data;
-        localStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.setItem("user", JSON.stringify(user));
         router.push("/");
       });
   }
